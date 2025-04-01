@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia Educativa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .question {
+            font-size: 1.2em;
+        }
+        .options button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            background: #ddd;
+        }
+        .options button.correct {
+            background: green;
+            color: white;
+        }
+        .options button.wrong {
+            background: red;
+            color: white;
+        }
+        #next {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .feedback {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container animate__animated animate__fadeIn">
+        <h2>Trivia Educativa 🎓</h2>
+        <p class="question">Cargando pregunta...</p>
+        <div class="options"></div>
+        <button id="next">Siguiente ➡️</button>
+        <div class="feedback"></div>
+    </div>
+
+    <script>
+        const preguntas = [
+            { pregunta: "¿Cuál es el planeta más grande del sistema solar?", opciones: ["Tierra", "Júpiter", "Marte", "Saturno"], respuesta: 1 },
+            { pregunta: "¿Cuántos continentes hay en la Tierra?", opciones: ["5", "6", "7", "8"], respuesta: 2 },
+            { pregunta: "¿Quién pintó la Mona Lisa?", opciones: ["Vincent van Gogh", "Pablo Picasso", "Leonardo da Vinci", "Claude Monet"], respuesta: 2 },
+            { pregunta: "¿Cuál es el metal más abundante en la corteza terrestre?", opciones: ["Hierro", "Aluminio", "Cobre", "Plata"], respuesta: 1 },
+            { pregunta: "¿Cuál es el océano más grande del mundo?", opciones: ["Atlántico", "Índico", "Pacífico", "Ártico"], respuesta: 2 },
+            { pregunta: "¿Cuántos huesos tiene el cuerpo humano adulto?", opciones: ["200", "206", "210", "180"], respuesta: 1 },
+            { pregunta: "¿Quién escribió 'Don Quijote de la Mancha'?", opciones: ["Gabriel García Márquez", "Miguel de Cervantes", "Federico García Lorca", "Pablo Neruda"], respuesta: 1 },
+            { pregunta: "¿Qué gas necesitan las plantas para hacer la fotosíntesis?", opciones: ["Oxígeno", "Dióxido de carbono", "Nitrógeno", "Hidrógeno"], respuesta: 1 },
+            { pregunta: "¿Cuál es el animal terrestre más rápido?", opciones: ["León", "Guepardo", "Caballo", "Antílope"], respuesta: 1 },
+            { pregunta: "¿Cuál es la capital de Japón?", opciones: ["Pekín", "Tokio", "Seúl", "Bangkok"], respuesta: 1 }
+        ];
+
+        let preguntaActual = 0;
+        let puntaje = 0;
+
+        function mostrarPregunta() {
+            document.querySelector(".question").textContent = preguntas[preguntaActual].pregunta;
+            const opcionesDiv = document.querySelector(".options");
+            opcionesDiv.innerHTML = "";
+            preguntas[preguntaActual].opciones.forEach((opcion, index) => {
+                const button = document.createElement("button");
+                button.textContent = opcion;
+                button.onclick = () => verificarRespuesta(button, index);
+                opcionesDiv.appendChild(button);
+            });
+            document.getElementById("next").style.display = "none";
+        }
+
+        function verificarRespuesta(button, index) {
+            const opciones = document.querySelectorAll(".options button");
+            opciones.forEach(btn => btn.disabled = true);
+            if (index === preguntas[preguntaActual].respuesta) {
+                button.classList.add("correct");
+                puntaje++;
+            } else {
+                button.classList.add("wrong");
+                opciones[preguntas[preguntaActual].respuesta].classList.add("correct");
+            }
+            document.getElementById("next").style.display = "block";
+        }
+
+        document.getElementById("next").onclick = () => {
+            preguntaActual++;
+            if (preguntaActual < preguntas.length) {
+                mostrarPregunta();
+            } else {
+                mostrarResultado();
+            }
+        };
+
+        function mostrarResultado() {
+            document.querySelector(".container").innerHTML = `
+                <h2>Trivia finalizada 🎉</h2>
+                <p>Tu puntaje es: ${puntaje} de ${preguntas.length}</p>
+                <p class="feedback">${puntaje >= 8 ? "¡Excelente trabajo! 🌟" : puntaje >= 5 ? "¡Bien hecho! 👍" : "Sigue practicando. 💪"}</p>
+            `;
+        }
+
+        mostrarPregunta();
+    </script>
+</body>
+</html>
